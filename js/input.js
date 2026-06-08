@@ -14,3 +14,48 @@
 // ============================================================================
 
 // TODO: build this file here.
+const held = {};
+const pressed = {};
+
+window.addEventListener("keydown", (e) => {
+  if (!held[e.code]) pressed[e.code] = true;
+  held[e.code] = true;
+
+  if (
+    ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(
+      e.code,
+    )
+  ) {
+    e.preventDefault();
+  }
+});
+
+window.addEventListener("keyup", (e) => {
+  held[e.code] = false;
+});
+
+export const input = {
+  isDown(code) {
+    return held[code] === true;
+  },
+  wasPresed(code) {
+    return pressed[code] === true;
+  },
+
+  get up() {
+    return held["ArrowUp"] || held["KeyW"];
+  },
+  get down() {
+    return held["ArrowDown"] || held["KeyS"];
+  },
+  get left() {
+    return held["ArrowLeft"] || held["KeyA"];
+  },
+  get right() {
+    return held["ArrowRight"] || held["KeyD"];
+  },
+
+  clearFrame() {
+    for (const key in pressed) delete pressed[key];
+  },
+};
