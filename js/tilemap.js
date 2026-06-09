@@ -44,7 +44,7 @@ export class TileMap {
         const layer = this.data[layerName];
         if (!layer) return;
         const startCol = Math.max(0,Math.floor(camera.x / CONFIG.SCALED_TILE));
-        const startrow = Math.max(0,Math.floor(camera.y / CONFIG.SCALED_TILE));
+        const startRow = Math.max(0,Math.floor(camera.y / CONFIG.SCALED_TILE));
         const endCol = Math.max(0,Math.floor(this.width, startCol + CONFIG.VIEW_TILES_X + 2));
         const endRow = Math.max(0,Math.floor(this.height, startRow + CONFIG.VIEW_TILES_Y + 2));
         for (let row = startRow; row < endRow; row++) {

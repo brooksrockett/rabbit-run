@@ -34,7 +34,7 @@ window.addEventListener("keyup", (e) => {
   held[e.code] = false;
 });
 
-export const input = {
+export const Input = {
   isDown(code) {
     return held[code] === true;
   },
