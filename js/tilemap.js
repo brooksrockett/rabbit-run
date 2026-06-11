@@ -10,51 +10,65 @@
 // - "entities" list : NPCs, enemies, items, doors, etc.
 // =============================================================
 
-// ============================================================================
-// STARTER STUB - you write this file during the code-along (Week 1, Day 3).
-// Follow the slides / Coding Companion for this week. If you fall behind,
-// the complete version is in the matching weekN-checkpoint/js/tilemap.js.
-// ============================================================================
-
-// TODO: build this file here.
-import {CONFIG} from "./config.js"
-import {drawTile} from "./tilesets.js"
+import { CONFIG } from "./config.js";
+import { drawTile } from "./tilesets.js";
 
 export class TileMap {
-    constructor(data) {
-        this.data = data;
-        this.width=data.width;
-        this.height= data.height;
-        this.pixelWidth = this.width * CONFIG.SCALED_TILE;
-        this.pixelHeight = this.width * CONFIG.SCALED_TILE;
+  constructor(data) {
+    this.data = data;
+    this.width = data.width;
+    this.height = data.height;
+    this.pixelWidth = this.width * CONFIG.SCALED_TILE;
+    this.pixelHeight = this.height * CONFIG.SCALED_TILE;
+  }
+
+  // Convert a (column, row) into the index of a flat array.
+  index(col, row) { return row * this.width + col; }
+
+  // Is the tile at this column/row solid (blocks movement)?
+  isSolid(col, row) {
+    // Outside the map counts as solid so the player can't walk off the edge.
+    if (col < 0 || row < 0 || col >= this.width || row >= this.height) return true;
+    return this.data.solid[this.index(col, row)] === 1;
+  }
+
+  // Take a pixel position and tell us if it's standing on a solid tile.
+  // Our solid decorations (rocks, bushes, fences) have their visible mass in the
+  // LOWER part of their tile, with empty space up top. So we treat only the
+  // lower part of a solid tile as actually blocking. This makes collisions line
+  // up with what you see, instead of stopping a player in the empty space above
+  // a rock. SOLID_TOP_INSET is how much of the tile top counts as "air".
+  isSolidAtPixel(px, py) {
+    const col = Math.floor(px / CONFIG.SCALED_TILE);
+    const row = Math.floor(py / CONFIG.SCALED_TILE);
+    if (!this.isSolid(col, row)) return false;
+    // Where does py fall inside this tile (0 = top, SCALED_TILE = bottom)?
+    const yInTile = py - row * CONFIG.SCALED_TILE;
+    return yInTile >= CONFIG.SOLID_TOP_INSET;
+  }
+
+  // Draw one layer ("ground" or "decor"), but only the tiles the camera sees.
+  drawLayer(ctx, layerName, camera) {
+    const layer = this.data[layerName];
+    if (!layer) return;
+
+    // Only loop over the tiles visible on screen (this keeps big maps fast).
+    const startCol = Math.max(0, Math.floor(camera.x / CONFIG.SCALED_TILE));
+    const startRow = Math.max(0, Math.floor(camera.y / CONFIG.SCALED_TILE));
+    const endCol = Math.min(this.width,  startCol + CONFIG.VIEW_TILES_X + 2);
+    const endRow = Math.min(this.height, startRow + CONFIG.VIEW_TILES_Y + 2);
+
+    for (let row = startRow; row < endRow; row++) {
+      for (let col = startCol; col < endCol; col++) {
+        const tileId = layer[this.index(col, row)];
+        if (!tileId) continue;
+        // Position on screen = world position minus where the camera is.
+        // Round to whole pixels so tiles never land on a fraction (which would
+        // leave faint seams between them).
+        const screenX = Math.round(col * CONFIG.SCALED_TILE - camera.x);
+        const screenY = Math.round(row * CONFIG.SCALED_TILE - camera.y);
+        drawTile(ctx, tileId, screenX, screenY);
+      }
     }
-    index(col,row) {return row * this.width + col;}
-    isSolid(col, row) {
-        if (col < 0 || row < 0 || col >= this.width || row >= this.height) return true;
-        return this.data.solid[this.index(col, row)] === 1;
-    }
-    isSolidAtPixel(px,py) {
-        const col = Math.floor(px / CONFIG.SCALED_TILE);
-        const row = Math.floor(py / CONFIG.SCALED_TILE);
-        if (!this.isSolid(col,row)) return false;
-        const yInTile = py-row * CONFIG.SCALED_TILE;
-        return yInTile >= CONFIG.SOLID_TOP_INSET;
-    }
-    drawLayer(ctx,layerName,camera) {
-        const layer = this.data[layerName];
-        if (!layer) return;
-        const startCol = Math.max(0,Math.floor(camera.x / CONFIG.SCALED_TILE));
-        const startRow = Math.max(0,Math.floor(camera.y / CONFIG.SCALED_TILE));
-        const endCol = Math.max(0,Math.floor(this.width, startCol + CONFIG.VIEW_TILES_X + 2));
-        const endRow = Math.max(0,Math.floor(this.height, startRow + CONFIG.VIEW_TILES_Y + 2));
-        for (let row = startRow; row < endRow; row++) {
-            for (let col = startCol; col < endCol; col++) {
-                const tileId = layer[this.index(col,row)];
-                if (!tileId) continue;
-                const screenX = Math.round(col * CONFIG.SCALED_TILE - camera.x);
-                const screenY = Math.round(row * CONFIG.SCALED_TILE - camera.y);
-                drawTile(ctx, tileId, screenX, screenY)
-            }
-        }
-    }
+  }
 }

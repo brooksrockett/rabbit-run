@@ -1,28 +1,23 @@
 // =============================================================
-//  config.js - All the "magic numbers" for Rabbit Run: Tales of the Warren RPG live here.
+//  config.js - Game settings in one place. (Week 2)
 // =============================================================
-//  Keeping settings in ONE place means you never have to hunt
-//  through the whole project to change how fast the player walks
-//  or how big a tile is. Change a value here, save, refresh.
+//  New this week: animation speed and attack settings.
 // =============================================================
 
-// ============================================================================
-// STARTER STUB - you write this file during the code-along (Week 1, Day 1).
-// Follow the slides / Coding Companion for this week. If you fall behind,
-// the complete version is in the matching weekN-checkpoint/js/config.js.
-// ============================================================================
-
-// TODO: build this file here.
 export const CONFIG = {
-    TILE_SIZE: 16,
-    SCALE:3,
-    VIEW_TILES_X: 16,
-    VIEW_TILES_Y: 12,
-    PLAYER_SPEED: 900,
-    PLAYER_FRAME_SIZE: 48,
-    SOLID_TOP_INSET: 16
-}
+  TILE_SIZE: 16,
+  SCALE: 3,
+  VIEW_TILES_X: 16,
+  VIEW_TILES_Y: 12,
+  PLAYER_SPEED: 90,          // pixels per second
+  PLAYER_FRAME_SIZE: 48,
 
-CONFIG.SCALED_TILE = CONFIG.TILE_SIZE*CONFIG.SCALE;
+  // ---- New in Week 2 ----
+  ANIM_FPS: 8,               // sprite animations play 8 frames/second
+  PLAYER_ATTACK_RANGE: 24,   // how far the sword reaches (pixels),
+  SOLID_TOP_INSET: 16,  // ignore this much "air" at the top of a solid tile
+};
+
+CONFIG.SCALED_TILE = CONFIG.TILE_SIZE * CONFIG.SCALE;
 CONFIG.CANVAS_WIDTH = CONFIG.VIEW_TILES_X * CONFIG.SCALED_TILE;
 CONFIG.CANVAS_HEIGHT = CONFIG.VIEW_TILES_Y * CONFIG.SCALED_TILE;
