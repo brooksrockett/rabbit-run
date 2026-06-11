@@ -8,6 +8,7 @@ const IMAGE_FILES = {
   bunny_idle: "assets/sprites/bunny_idle.png",
   bunny_run:  "assets/sprites/bunny_run.png",   // NEW: walking animation
   bunny_sword:"assets/sprites/bunny_sword.png", // NEW: attack animation
+  cow: "assets/sprites/cow_idle.png"
 };
 
 const AUDIO_FILES = {

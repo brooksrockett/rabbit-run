@@ -11,6 +11,7 @@ import { Input } from "./input.js";
 import { TileMap } from "./tilemap.js";
 import { Camera } from "./camera.js";
 import { Player } from "./player.js";
+import {NPC} from './npc.js'
 
 class Game {
   constructor(canvas) {
@@ -26,6 +27,7 @@ class Game {
     this.map = new TileMap(mapData);
     this.camera = new Camera();
     this.player = new Player(mapData.playerStart.x, mapData.playerStart.y);
+    this.cow = new NPC({"x":850,"y":850})
     requestAnimationFrame(this.loop.bind(this));
   }
 
@@ -51,6 +53,7 @@ class Game {
     this.map.drawLayer(ctx, "ground", this.camera);
     this.player.draw(ctx, this.camera);
     this.map.drawLayer(ctx, "decor", this.camera);
+    this.cow.draw(ctx,this.camera)
   }
 }
 
